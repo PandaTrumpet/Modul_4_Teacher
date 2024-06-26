@@ -13,7 +13,8 @@ export const adddMOvie = (data) => Movie.create(data);
 
 export const upsertMovie = async (filter, data, options = {}) => {
   const result = await Movie.findOneAndUpdate(filter, data, {
-    new: true,
+    // new: true, // верни обновленній об'єкт
+    // runValidators: true, //для испльзования валидатора во время обновления
     includeResultMetadata: true, //додає нові властивості в Postman
     ...options,
   });

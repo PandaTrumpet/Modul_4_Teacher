@@ -14,7 +14,7 @@ export const getAllMoviesController = async (req, res) => {
     message: 'Success',
   });
 };
-
+import { movieAddSchema } from '../validation/movie-schemas.js';
 export const getMovieByIdController = async (req, res) => {
   const { id } = req.params;
   const data = await getMovieById(id);
@@ -52,6 +52,8 @@ export const getMovieByIdController = async (req, res) => {
 
 export const addMovieController = async (req, res) => {
   // console.log(req.body);
+
+  // console.log(validationResult.error);
   const result = await adddMOvie(req.body);
 
   res.status(201).json({

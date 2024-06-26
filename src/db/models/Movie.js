@@ -1,4 +1,9 @@
 import { Schema, model } from 'mongoose';
+import {
+  releaseYearRegexp,
+  typeList,
+} from '../../constants/movies-constants.js';
+import { mongooseSaveError, setUpdatesSettings } from './hooks.js';
 
 const movieSchema = new Schema(
   {
@@ -8,19 +13,29 @@ const movieSchema = new Schema(
     },
     title: {
       type: String,
-      required: true,
+      required: [true, 'Title must be'], //добавление кастмного сообщения об ошибки
     },
     type: {
       type: String,
-      enum: ['film', 'serial'],
+      enum: typeList,
       default: 'film',
+    },
+    releaseYear: {
+      type: String,
+      match: releaseYearRegexp,
+      // /^\d{4}$/, // регулярное віражение для коллисечтва сиволов( используеться для строки)
+      required: true,
     },
   },
   {
     versionKey: false,
-    timestamps: true, // тераба додати
+    timestamps: true, // траба додати
   },
 );
+
+movieSchema.post('save', mongooseSaveError); //це хук ,якщо сталася помилка
+movieSchema.pre('findOneAndUpdate', setUpdatesSettings);
+movieSchema.post('findOneAndUpdate', mongooseSaveError);
 
 const Movie = model('movie', movieSchema);
 export default Movie;
