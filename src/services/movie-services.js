@@ -1,6 +1,33 @@
 import Movie from '../db/models/Movie.js';
+import calcPaginationData from '../utils/calcPaginationData.js';
+export const getMovies = async ({
+  page,
+  perPage,
+  sortBy = '_id',
+  sortOrder = 'asc',
+}) => {
+  const skip = (page - 1) * perPage;
+  const items = await Movie.find()
+    .skip(skip)
+    .limit(perPage)
+    .sort({ [sortBy]: sortOrder });
+  const totalItems = await Movie.countDocuments(); // колличестов документов
 
-export const getMovies = () => Movie.find();
+  const { totalPages, hasNextPage, hasPrevPage } = calcPaginationData({
+    total: totalItems,
+    perPage,
+    page,
+  });
+  return {
+    items,
+    totalItems,
+    page,
+    perPage,
+    totalPages,
+    hasNextPage,
+    hasPrevPage,
+  };
+};
 export const getMovieById = (id) => Movie.findById(id); //throw new Error()
 
 export const adddMOvie = (data) => Movie.create(data);

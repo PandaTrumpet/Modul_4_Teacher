@@ -6,8 +6,14 @@ import {
   deleteMovie,
 } from '../services/movie-services.js';
 import createHttpError from 'http-errors';
+import parsePaginationParam from '../utils/parsePaginationParams.js';
+import parseSortParams from '../utils/parseSortParams.js';
+import { movieFiledList } from '../constants/movies-constants.js';
 export const getAllMoviesController = async (req, res) => {
-  const data = await getMovies();
+  const { page, perPage } = parsePaginationParam(req.query);
+  const { sortBy, sortOder } = parseSortParams(req.query, movieFiledList);
+  console.log(req.query); // передает парметрі пагинации
+  const data = await getMovies({ page, perPage, sortBy, sortOder });
   res.json({
     status: 200,
     data,
