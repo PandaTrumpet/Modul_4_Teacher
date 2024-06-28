@@ -9,9 +9,13 @@ import createHttpError from 'http-errors';
 import parsePaginationParam from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
 import { movieFiledList } from '../constants/movies-constants.js';
+
+import { parseMovieFilterParams } from '../utils/parseMovieFilterParams.js';
 export const getAllMoviesController = async (req, res) => {
   const { page, perPage } = parsePaginationParam(req.query);
   const { sortBy, sortOder } = parseSortParams(req.query, movieFiledList);
+  const { type } = parseMovieFilterParams(req.query);
+
   console.log(req.query); // передает парметрі пагинации
   const data = await getMovies({ page, perPage, sortBy, sortOder });
   res.json({
