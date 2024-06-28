@@ -26,6 +26,10 @@ const movieSchema = new Schema(
       // /^\d{4}$/, // регулярное віражение для коллисечтва сиволов( используеться для строки)
       required: true,
     },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     versionKey: false,

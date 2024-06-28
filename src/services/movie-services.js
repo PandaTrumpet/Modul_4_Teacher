@@ -1,17 +1,31 @@
 import Movie from '../db/models/Movie.js';
 import calcPaginationData from '../utils/calcPaginationData.js';
 export const getMovies = async ({
+  filter,
   page,
   perPage,
   sortBy = '_id',
   sortOrder = 'asc',
 }) => {
   const skip = (page - 1) * perPage;
-  const items = await Movie.find()
+  const databaseQuery = Movie.find();
+  if (filter.type) {
+    databaseQuery.where('type').equals(filter.type);
+  }
+  if (filter.favorite) {
+    databaseQuery.where('favorite').equals(filter.favorite);
+  }
+  const items = await databaseQuery
+    .find()
     .skip(skip)
     .limit(perPage)
     .sort({ [sortBy]: sortOrder });
-  const totalItems = await Movie.countDocuments(); // колличестов документов
+
+  const totalItems = await Movie.find()
+    .merge(databaseQuery)
+    .where('favorite')
+    .equals(filter.favorite)
+    .countDocuments(); // колличестов документов
 
   const { totalPages, hasNextPage, hasPrevPage } = calcPaginationData({
     total: totalItems,
